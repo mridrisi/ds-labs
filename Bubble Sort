@@ -1,0 +1,22 @@
+def bubble(n, Ab):
+    for i in range(n - 1):
+        flag = 0
+        for j in range(n - 1 - i):
+            if Ab[j] > Ab[j + 1]:
+                Ab[j], Ab[j + 1] = Ab[j + 1], Ab[j]
+                flag = 1
+
+        # If no swapping happened, array is already sorted
+        if flag == 0:
+            break
+    return Ab
+
+
+def main():
+    Array = [20, 70, 40, 10, 8, 56, 89, 90, 50, 30]
+    length = len(Array)
+    sorted_array = bubble(length, Array)
+    print("Sorted array:", sorted_array)
+
+
+main()
