@@ -1,52 +1,20 @@
-def LS(LIST, search):
-    for i in range(len(LIST)):
-        if LIST[i] == search:
-            return i
-    return -1
+# Selection Sort to sort an array
+def selection(n, A):
+    for i in range(n - 1):                     
+        min_index = i                         
+        for j in range(i + 1, n):              
+            if A[j] < A[min_index]:          
+                min_index = j
+        if min_index != i:                   
+            A[i], A[min_index] = A[min_index], A[i]  
+
+    print("Sorted array:", A)                
 
 
-def BS(LIST, search, low, high):
-    while low <= high:
-        mid = (low + high) // 2
-        if LIST[mid] == search:
-            return mid
-        elif LIST[mid] < search:
-            low = mid + 1
-        else:
-            high = mid - 1
-    return -1
+def main():
+    Array = [20, 40, 10, 90, 50, 89, 7, 34, 30, 70]
+    length = len(Array)
+    selection(length, Array)            
 
 
-# --- Main program ---
-size = int(input("Enter the number of customers: "))
-LIST = []
-
-for i in range(size):
-    id = int(input("Enter the ID: "))
-    LIST.append(id)
-
-print("Customer IDs are:", LIST)
-
-search = int(input("Enter the number to be searched: "))
-
-print("\nEnter 1 for Linear Search or 2 for Binary Search")
-choice = int(input("Enter your choice: "))
-
-if choice == 1:
-    result = LS(LIST, search)
-    if result != -1:
-        print(f"Number found using Linear Search at position {result}")
-    else:
-        print("Number not found")
-
-elif choice == 2:
-    LIST.sort()  # Binary search requires a sorted list
-    print("Sorted Customer IDs for Binary Search:", LIST)
-    result = BS(LIST, search, 0, len(LIST) - 1)
-    if result != -1:
-        print(f"Number found using Binary Search at position {result}")
-    else:
-        print("Number not found")
-
-else:
-    print("Invalid choice!")
+main()                                         
