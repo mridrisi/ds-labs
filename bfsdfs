@@ -1,0 +1,48 @@
+from collections import deque  # <--- REQUIRED FIX
+
+graph_matrix = [
+    [0, 1, 1, 0, 0],
+    [1, 0, 1, 1, 0],
+    [1, 1, 0, 0, 1],
+    [0, 1, 0, 0, 1],
+    [0, 0, 1, 1, 0]
+]
+
+graph_list = {
+    'A': ['B', 'C'],
+    'B': ['A', 'C', 'D'],
+    'C': ['A', 'B', 'E'],
+    'D': ['B', 'E'],
+    'E': ['C', 'D']
+}
+
+def bfs_matrix(start, matrix):
+    # This function uses a Queue (deque) for level-by-level traversal 
+    visited = [False]*len(matrix)
+    queue = deque([start])
+    visited[start] = True
+    order = []
+    while queue:
+        node = queue.popleft()
+        order.append(chr(node + 65))
+        for i in range(len(matrix)):
+            if matrix[node][i] == 1 and not visited[i]:
+                queue.append(i)
+                visited[i] = True
+    return order
+
+def dfs_list(graph, start, visited=None):
+    # This function uses recursion (the system stack) for deep traversal 
+    if visited is None:
+        visited = []
+    visited.append(start)
+    for neighbor in graph[start]:
+        if neighbor not in visited:
+            dfs_list(graph, neighbor, visited)
+    return visited
+
+# Output:
+# BFS (Adjacency Matrix): ['A', 'B', 'C', 'D', 'E']
+# DFS (Adjacency List): ['A', 'B', 'C', 'E', 'D']
+print("BFS (Adjacency Matrix):", bfs_matrix(0, graph_matrix))
+print("DFS (Adjacency List):", dfs_list(graph_list, 'A'))
