@@ -1,48 +1,80 @@
-from collections import deque  # <--- REQUIRED FIX
+class GraphMatrix:
+    def __init__(self, vertices):
+        self.vertices = vertices
+        self.size = len(vertices)
+        self.adj_matrix = [[0]*self.size for _ in range(self.size)]
 
-graph_matrix = [
-    [0, 1, 1, 0, 0],
-    [1, 0, 1, 1, 0],
-    [1, 1, 0, 0, 1],
-    [0, 1, 0, 0, 1],
-    [0, 0, 1, 1, 0]
-]
+    def add_edge(self, u, v):
+        if u not in self.vertices or v not in self.vertices:
+            print("Error: vertex not found")
+            return
+        i = self.vertices.index(u)
+        j = self.vertices.index(v)
+        self.adj_matrix[i][j] = 1
+        self.adj_matrix[j][i] = 1
 
-graph_list = {
-    'A': ['B', 'C'],
-    'B': ['A', 'C', 'D'],
-    'C': ['A', 'B', 'E'],
-    'D': ['B', 'E'],
-    'E': ['C', 'D']
-}
+    def dfs(self, start, visited=None):
+        if start not in self.vertices:
+            print("Error: Starting vertex not found")
+            return
+        if visited is None:
+            visited = set()
+        print(start, end=' ')
+        visited.add(start)
+        start_index = self.vertices.index(start)
+        for i in range(self.size):
+            if self.adj_matrix[start_index][i] == 1 and self.vertices[i] not in visited:
+                self.dfs(self.vertices[i], visited)
 
-def bfs_matrix(start, matrix):
-    # This function uses a Queue (deque) for level-by-level traversal 
-    visited = [False]*len(matrix)
-    queue = deque([start])
-    visited[start] = True
-    order = []
-    while queue:
-        node = queue.popleft()
-        order.append(chr(node + 65))
-        for i in range(len(matrix)):
-            if matrix[node][i] == 1 and not visited[i]:
-                queue.append(i)
-                visited[i] = True
-    return order
 
-def dfs_list(graph, start, visited=None):
-    # This function uses recursion (the system stack) for deep traversal 
-    if visited is None:
-        visited = []
-    visited.append(start)
-    for neighbor in graph[start]:
-        if neighbor not in visited:
-            dfs_list(graph, neighbor, visited)
-    return visited
+class GraphList:
+    def __init__(self):
+        self.adj_list = {}
 
-# Output:
-# BFS (Adjacency Matrix): ['A', 'B', 'C', 'D', 'E']
-# DFS (Adjacency List): ['A', 'B', 'C', 'E', 'D']
-print("BFS (Adjacency Matrix):", bfs_matrix(0, graph_matrix))
-print("DFS (Adjacency List):", dfs_list(graph_list, 'A'))
+    def add_edge(self, u, v):
+        if u not in self.adj_list:
+            self.adj_list[u] = []
+        if v not in self.adj_list:
+            self.adj_list[v] = []
+        self.adj_list[u].append(v)
+        self.adj_list[v].append(u)
+
+    def bfs(self, start):
+        if start not in self.adj_list:
+            print("Error: Starting vertex not found")
+            return
+        visited = set()
+        queue = [start]
+        visited.add(start)
+        while queue:
+            node = queue.pop(0)
+            print(node, end=' ')
+            for neighbour in self.adj_list[node]:
+                if neighbour not in visited:
+                    visited.add(neighbour)
+                    queue.append(neighbour)
+
+
+# Main program
+print("Graph Traversal (City Area Example)")
+n = int(input("Enter number of locations: "))
+vertices = []
+for i in range(n):
+    name = input(f"Enter location name ({i+1}): ").upper()
+    vertices.append(name)
+
+g_matrix = GraphMatrix(vertices)
+g_list = GraphList()
+
+e = int(input("Enter number of routes between locations: "))
+for i in range(e):
+    u, v = input("Enter route (e.g., A B): ").upper().split()
+    g_matrix.add_edge(u, v)
+    g_list.add_edge(u, v)
+
+start = input("Enter starting location: ").upper()
+print("\nDFS Traversal using Adjacency Matrix:")
+g_matrix.dfs(start)
+print("\nBFS Traversal using Adjacency List:")
+g_list.bfs(start)
+print()
